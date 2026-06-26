@@ -1,0 +1,42 @@
+{
+  "scenario": {
+    "name": "Кубок Енисея — цифровой штурман",
+    "area": "Красноярское вдхр., Дивногорск → Бирюса",
+    "offline_first": true
+  },
+  "boat": {
+    "name": "Raptor 650",
+    "tank_l": 370,
+    "base_l_per_km": 0.8,
+    "reserve_frac_tank": 0.2,
+    "engine_oil_min_pct": 20
+  },
+  "configs": {
+    "без поддува": { "k_load": 1.0, "allow_hard": false },
+    "с поддувом": { "k_load": 1.12, "allow_hard": true }
+  },
+  "surfaces": {
+    "water": { "label": "вода", "spd": 58, "k_surf": 1.0, "risk": 2, "planing": true, "hard": false },
+    "ice": { "label": "лёд", "spd": 64, "k_surf": 0.9, "risk": 1, "planing": true, "hard": false },
+    "shallow": { "label": "мелководье", "spd": 34, "k_surf": 1.4, "risk": 4, "planing": false, "hard": false },
+    "slush": { "label": "шуга", "spd": 28, "k_surf": 1.7, "risk": 4, "planing": false, "hard": false },
+    "rocks": { "label": "камни", "spd": 24, "k_surf": 1.65, "risk": 6, "planing": false, "hard": true },
+    "marsh": { "label": "болото", "spd": 20, "k_surf": 1.9, "risk": 7, "planing": false, "hard": true }
+  },
+  "modes": {
+    "быстрый": { "obj": "time", "k_mode": 1.15 },
+    "экономичный": { "obj": "fuel", "k_mode": 0.95 },
+    "кратчайший": { "obj": "length", "k_mode": 1.0 },
+    "безопасный": { "obj": "risk", "k_mode": 1.05 }
+  },
+  "map": {
+    "water_polygon": [
+      [92.38, 55.96], [92.36, 55.93], [92.32, 55.89],
+      [92.28, 55.86], [92.32, 55.83], [92.28, 55.78],
+      [92.22, 55.78], [92.24, 55.83], [92.18, 55.87],
+      [92.08, 55.82], [91.95, 55.75], [91.85, 55.75],
+      [91.95, 55.82], [92.10, 55.89], [92.18, 55.93],
+      [92.32, 55.98], [92.38, 55.98]
+    ]
+  }
+}

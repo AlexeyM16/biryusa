@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {"type": "Feature", "properties": {"name": "Дивногорск"}, "geometry": {"type": "Point", "coordinates": [92.3558, 55.9584]}},
+    {"type": "Feature", "properties": {"name": "Полынья"}, "geometry": {"type": "Point", "coordinates": [92.2500, 55.9100]}},
+    {"type": "Feature", "properties": {"name": "Лёд-1"}, "geometry": {"type": "Point", "coordinates": [92.1500, 55.9300]}},
+    {"type": "Feature", "properties": {"name": "Камни"}, "geometry": {"type": "Point", "coordinates": [92.2800, 55.8500]}},
+    {"type": "Feature", "properties": {"name": "Болото"}, "geometry": {"type": "Point", "coordinates": [92.1000, 55.8800]}},
+    {"type": "Feature", "properties": {"name": "Узел-М"}, "geometry": {"type": "Point", "coordinates": [92.0500, 55.8200]}},
+    {"type": "Feature", "properties": {"name": "Шуга"}, "geometry": {"type": "Point", "coordinates": [92.1200, 55.7800]}},
+    {"type": "Feature", "properties": {"name": "Чисто"}, "geometry": {"type": "Point", "coordinates": [91.9500, 55.7900]}},
+    {"type": "Feature", "properties": {"name": "Бирюса"}, "geometry": {"type": "Point", "coordinates": [91.9000, 55.7500]}},
+    {"type": "Feature", "properties": {"from": "Дивногорск", "to": "Полынья", "surface": "water"}, "geometry": {"type": "LineString", "coordinates": [[92.3558, 55.9584], [92.2500, 55.9100]]}},
+    {"type": "Feature", "properties": {"from": "Полынья", "to": "Узел-М", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.2500, 55.9100], [92.0500, 55.8200]]}},
+    {"type": "Feature", "properties": {"from": "Дивногорск", "to": "Лёд-1", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.3558, 55.9584], [92.1500, 55.9300]]}},
+    {"type": "Feature", "properties": {"from": "Лёд-1", "to": "Узел-М", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.1500, 55.9300], [92.0500, 55.8200]]}},
+    {"type": "Feature", "properties": {"from": "Дивногорск", "to": "Камни", "surface": "rocks"}, "geometry": {"type": "LineString", "coordinates": [[92.3558, 55.9584], [92.2800, 55.8500]]}},
+    {"type": "Feature", "properties": {"from": "Камни", "to": "Узел-М", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.2800, 55.8500], [92.0500, 55.8200]]}},
+    {"type": "Feature", "properties": {"from": "Дивногорск", "to": "Болото", "surface": "marsh"}, "geometry": {"type": "LineString", "coordinates": [[92.3558, 55.9584], [92.1000, 55.8800]]}},
+    {"type": "Feature", "properties": {"from": "Болото", "to": "Узел-М", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.1000, 55.8800], [92.0500, 55.8200]]}},
+    {"type": "Feature", "properties": {"from": "Узел-М", "to": "Шуга", "surface": "slush"}, "geometry": {"type": "LineString", "coordinates": [[92.0500, 55.8200], [92.1200, 55.7800]]}},
+    {"type": "Feature", "properties": {"from": "Шуга", "to": "Бирюса", "surface": "shallow"}, "geometry": {"type": "LineString", "coordinates": [[92.1200, 55.7800], [91.9000, 55.7500]]}},
+    {"type": "Feature", "properties": {"from": "Узел-М", "to": "Чисто", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[92.0500, 55.8200], [91.9500, 55.7900]]}},
+    {"type": "Feature", "properties": {"from": "Чисто", "to": "Бирюса", "surface": "ice"}, "geometry": {"type": "LineString", "coordinates": [[91.9500, 55.7900], [91.9000, 55.7500]]}}
+  ]
+}
