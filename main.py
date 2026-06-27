@@ -18,7 +18,7 @@ class CoordRequest(BaseModel):
     passengers: int; temp: float; oil: float
 
 @app.get("/")
-def read_root(): return FileResponse("static/index.html")
+def read_root(): return FileResponse("static/html/index.html")
 
 @app.post("/calculate-route")
 def calculate_route(req: CoordRequest):

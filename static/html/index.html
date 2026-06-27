@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Штурман Енисея - Raptor 650</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Настройки маршрута</h2>
+
+        <div class="control-group">
+            <label>Откуда:</label>
+            <select id="start-point">
+                <option value="" selected>Кликните на карту...</option>
+                <option value="55.928746,92.275371">Дивногорск</option>
+                <option value="55.859435,92.249132">Залив Бирюса</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Куда:</label>
+            <select id="end-point">
+                <option value="" selected>Кликните на карту...</option>
+                <option value="55.928746,92.275371">Дивногорск</option>
+                <option value="55.859435,92.249132">Залив Бирюса</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Конфигурация лодки:</label>
+            <select id="boat-config">
+                <option value="без поддува">Без поддува</option>
+                <option value="с поддувом">С поддувом (чешуя)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>Режим движения:</label>
+            <select id="boat-mode">
+                <option value="быстрый">Быстрый</option>
+                <option value="экономичный">Экономичный</option>
+                <option value="безопасный">Безопасный</option>
+            </select>
+        </div>
+
+        <div class="control-row">
+            <div class="control-group half">
+                <label>Пассажиры:</label>
+                <input type="number" id="passengers" value="2" min="0" max="6">
+            </div>
+            <div class="control-group half">
+                <label>Темп. (°C):</label>
+                <input type="number" id="temperature" value="-15">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Масло двигателя (%):</label>
+            <input type="number" id="oil-level" value="100" min="0" max="100">
+        </div>
+
+        <button id="calc-btn" onclick="calculateRoute()">Построить маршрут</button>
+
+        <div id="results" class="results-panel" style="display: none;">
+            <h3>Итоги:</h3>
+            <p><b>Дистанция:</b> <span id="res-km">-</span> км</p>
+            <p><b>Время:</b> <span id="res-time">-</span> ч</p>
+            <p><b>Топливо:</b> <span id="res-fuel">-</span> л (Остаток: <span id="res-rem">-</span> л)</p>
+            <p><b>Ср. глубина:</b> <span id="res-depth">-</span> м</p>
+            <p><b>Масло (финиш):</b> <span id="res-oil">-</span>%</p>
+            <p><b>Макс. риск:</b> <span id="res-risk">-</span>/10</p>
+            <div id="res-warnings" class="warnings"></div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
