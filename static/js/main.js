@@ -6,7 +6,28 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+function updateNetworkStatus() {
+    const badge = document.getElementById('network-badge');
+    if (navigator.onLine) {
+        badge.className = 'badge online';
+        badge.innerText = 'СИНХРОНИЗИРОВАНО';
+    } else {
+        badge.className = 'badge offline';
+        badge.innerText = 'АВТОНОМНЫЙ РЕЖИМ';
+    }
+}
+
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+
 document.addEventListener("DOMContentLoaded", () => {
+    const now = new Date();
+    now.setHours(now.getHours() - 2);
+    document.getElementById('sync-time').innerText = now.toLocaleString('ru-RU', {
+        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
+    updateNetworkStatus();
+
     const startSelect = document.getElementById('start-point');
     const endSelect = document.getElementById('end-point');
 
@@ -26,6 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
             endSelect.value = "";
             document.getElementById('results').style.display = 'none';
         });
+    });
+
+    document.getElementById('current-fuel').addEventListener('input', (e) => {
+        document.getElementById('fuel-value-display').innerText = e.target.value;
     });
 
     document.getElementById('calc-btn').addEventListener('click', calculateRouteApi);
@@ -50,8 +75,13 @@ async function calculateRouteApi() {
         mode: document.getElementById('boat-mode').value,
         passengers: parseInt(document.getElementById('passengers').value) || 0,
         temp: parseFloat(document.getElementById('temperature').value) || 0,
-        oil: parseFloat(document.getElementById('oil-level').value) || 100
+        oil: parseFloat(document.getElementById('oil-level').value) || 100,
+        current_fuel: parseFloat(document.getElementById('current-fuel').value) || 370
     };
+
+    document.getElementById('results').style.display = 'none';
+    const loadingBar = document.getElementById('loading-bar');
+    loadingBar.classList.remove('hidden');
 
     try {
         const response = await fetch('/calculate-route', {
@@ -61,6 +91,8 @@ async function calculateRouteApi() {
         });
 
         const data = await response.json();
+
+        loadingBar.classList.add('hidden');
 
         if (data.error) {
             alert("ОШИБКА: " + data.error);
@@ -96,6 +128,7 @@ async function calculateRouteApi() {
 
     } catch (err) {
         console.error(err);
+        loadingBar.classList.add('hidden');
         alert("СИСТЕМНАЯ ОШИБКА: Не удалось связаться с сервером.");
     }
 }

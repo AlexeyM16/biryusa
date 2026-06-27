@@ -8,6 +8,7 @@ GRAPH_NODES = []
 GRAPH_EDGES = {}
 STEP = 0.002
 
+
 def haversine_km(lat1, lon1, lat2, lon2):
     r = 6371.0
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
@@ -16,11 +17,15 @@ def haversine_km(lat1, lon1, lat2, lon2):
     a = math.sin(d_phi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(d_lam / 2) ** 2
     return 2 * r * math.asin(math.sqrt(a))
 
+
 def line_of_sight(n1, n2):
     line = LineString([(n1[1], n1[0]), (n2[1], n2[0])])
     return WATER_POLY.contains(line)
 
+
 IS_INITIALIZED = False
+
+
 def init_advanced_gis():
     global WATER_POLY, GRAPH_NODES, GRAPH_EDGES
 
@@ -54,17 +59,20 @@ def init_advanced_gis():
                 if n_node in GRAPH_NODES and line_of_sight(node, n_node):
                     GRAPH_EDGES[node].append(n_node)
 
+
 def smooth_path(path):
     if len(path) < 3: return path
     smoothed = [path[0]]
     i = 0
     while i < len(path) - 2:
-        if line_of_sight(smoothed[-1], path[i + 2]): i += 1
+        if line_of_sight(smoothed[-1], path[i + 2]):
+            i += 1
         else:
             smoothed.append(path[i + 1])
             i += 1
     smoothed.append(path[-1])
     return smoothed
+
 
 def snap_to_water_and_connect(lat, lon):
     pt = Point(lon, lat)
@@ -83,13 +91,14 @@ def snap_to_water_and_connect(lat, lon):
         return node_coord, [best]
     return node_coord, visible_nodes
 
+
 def get_dynamic_physics(lat, lon, temp_c, base_surfaces):
     pt = Point(lon, lat)
     dist_m = WATER_POLY.boundary.distance(pt) * 111000 * math.cos(math.radians(lat))
-    depth = min(45.0, dist_m * 0.12)
 
-    if temp_c <= -10 and depth < 5.0: return base_surfaces["slush"], depth
+    depth = min(45.0, (dist_m + 15) * 0.12)
+
     if temp_c <= -15: return base_surfaces["ice"], depth
-    if depth < 0.6: return base_surfaces["rocks"], depth
+    if temp_c <= -5 and depth < 2.5: return base_surfaces["slush"], depth
     if depth < 2.5: return base_surfaces["shallow"], depth
     return base_surfaces["water"], depth

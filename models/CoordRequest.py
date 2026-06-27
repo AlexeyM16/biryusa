@@ -10,3 +10,4 @@ class CoordRequest(BaseModel):
     passengers: int
     temp: float
     oil: float
+    current_fuel: float

@@ -9,12 +9,24 @@
 </head>
 <body>
     <div class="sidebar">
+        <div class="system-status-panel">
+            <div class="status-header">
+                <span class="status-title">Статус системы:</span>
+                <span id="network-badge" class="badge online">СИНХРОНИЗИРОВАНО</span>
+            </div>
+            <ul class="local-data-list">
+                <li><span class="icon-check">✓</span> Карта (КрасВдхр) <span class="data-tag">локально</span></li>
+                <li><span class="icon-check">✓</span> Лодка (Raptor 650) <span class="data-tag">локально</span></li>
+            </ul>
+            <div class="last-sync">Обновлено: <span id="sync-time"></span></div>
+        </div>
+
         <h2>Настройки маршрута</h2>
 
-        <        <div class="control-group">
+        <div class="control-group">
             <label>Откуда:</label>
             <select id="start-point">
-                <option value="" selected>Укажите на карте...</option>
+                <option value="" selected>Кликните на карту...</option>
                 <option value="55.928746,92.275371">Дивногорск (Адмирал)</option>
                 <option value="55.859435,92.249132">Залив Бирюса</option>
                 <option value="55.922724,91.971605">Верхняя Бирюса</option>
@@ -27,7 +39,7 @@
         <div class="control-group">
             <label>Куда:</label>
             <select id="end-point">
-                <option value="" selected>Укажите на карте...</option>
+                <option value="" selected>Кликните на карту...</option>
                 <option value="55.928746,92.275371">Дивногорск (Адмирал)</option>
                 <option value="55.859435,92.249132">Залив Бирюса</option>
                 <option value="55.922724,91.971605">Верхняя Бирюса</option>
@@ -71,8 +83,20 @@
             <input type="number" id="oil-level" value="100" min="0" max="100">
         </div>
 
+        <div class="control-group fuel-slider-group">
+            <label>Текущий запас топлива: <span id="fuel-value-display" style="color: #0ea5e9; font-weight: bold;">370</span> л</label>
+            <input type="range" id="current-fuel" min="10" max="370" value="370" step="1">
+        </div>
+
         <button id="calc-btn" class="primary-btn">Построить маршрут</button>
         <button id="test-btn" class="secondary-btn">Тестирование мат. модели</button>
+
+        <div id="loading-bar" class="hidden" style="margin-top: 20px;">
+            <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 6px; text-transform: uppercase;">Генерация маршрута...</div>
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
 
         <div id="results" class="results-panel" style="display: none;">
             <h3>Сводка</h3>
@@ -83,7 +107,7 @@
                 <p>Остаток: <span id="res-rem">-</span> л</p>
                 <p>Ср. глубина: <span id="res-depth">-</span> м</p>
                 <p>Масло: <span id="res-oil">-</span>%</p>
-                <p>Макс. риск: <span id="res-risk">-</span> / 10</p>
+                <p>Макс. риск: <span id="res-risk">-</span> / 7</p>
             </div>
             <div id="res-warnings" class="warnings-box"></div>
         </div>
