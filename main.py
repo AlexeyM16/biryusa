@@ -29,5 +29,4 @@ def calculate_route(req: CoordRequest):
 
 @app.get("/run-tests")
 def run_tests():
-    # Прогон синтетических тестов (автопроверка)
     return navigator.run_synthetic_tests(team_data)

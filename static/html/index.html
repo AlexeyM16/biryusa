@@ -50,6 +50,7 @@
             <select id="boat-mode">
                 <option value="быстрый">Быстрый</option>
                 <option value="экономичный">Экономичный</option>
+                <option value="кратчайший">Кратчайший</option>
                 <option value="безопасный">Безопасный</option>
             </select>
         </div>
@@ -87,12 +88,28 @@
     </div>
 
     <!-- Всплывающая панель автотестов -->
-    <div id="test-panel" class="test-runner hidden">
+    <div id="test-panel" class="test-runner">
         <div class="test-header">
-            <h2>Автопроверка модели (синтетический граф)</h2>
+            <h2>Прогон синтетического графа</h2>
             <button onclick="closeTestPanel()">Закрыть ✖</button>
         </div>
-        <div id="test-content">Загрузка тестов...</div>
+
+        <!-- Контейнер таблицы -->
+        <div id="test-table-container">
+            <div id="test-content">Загрузка тестов...</div>
+            <div class="download-container">
+                <button class="download-btn" onclick="downloadAnswers()">📥 Скачать answers.json</button>
+            </div>
+        </div>
+
+        <!-- Контейнер Графа (белый фон) -->
+        <div id="graph-view" class="hidden">
+            <button class="back-btn" onclick="backToTable()">🔙 Назад к таблице</button>
+            <div class="canvas-wrapper">
+                <canvas id="graph-canvas" width="600" height="400"></canvas>
+            </div>
+            <p class="graph-legend">Красным выделен оптимальный путь для выбранного режима</p>
+        </div>
     </div>
 
     <div id="map"></div>
