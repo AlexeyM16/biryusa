@@ -2,7 +2,7 @@ let currentTestResults = [];
 
 async function openTestPanel() {
     document.getElementById('test-panel').classList.add('open');
-    document.getElementById('test-content').innerHTML = "<b>Прогоняем модель...</b>";
+    document.getElementById('test-content').innerHTML = "<div style='color:#64748b;'>Инициализация модуля тестирования...</div>";
     backToTable();
 
     try {
@@ -15,7 +15,7 @@ async function openTestPanel() {
                 <tr>
                     <th>Конфигурация</th>
                     <th>Режим</th>
-                    <th>Результат Модели</th>
+                    <th>Метрики</th>
                     <th>Граф</th>
                 </tr>
             </thead>
@@ -27,13 +27,13 @@ async function openTestPanel() {
                 <td><b>${t.config}</b></td>
                 <td>${t.mode}</td>
                 <td>
-                    ⏱ ${t.actual.time_h} ч<br>
-                    ⛽ ${t.actual.fuel_l} л<br>
-                    ⚠ Риск: ${t.actual.max_risk}<br>
-                    <small>${t.actual.route}</small>
+                    Время: ${t.actual.time_h} ч<br>
+                    Топливо: ${t.actual.fuel_l} л<br>
+                    Риск: ${t.actual.max_risk}<br>
+                    <small style="color:#64748b;">Путь: ${t.actual.route}</small>
                 </td>
                 <td style="text-align:center;">
-                    <button class="btn-show-graph" onclick="window.showGraph('${t.actual.route}')">Показать</button>
+                    <button class="outline-btn" style="padding: 4px 8px; font-size: 0.75rem;" onclick="window.showGraph('${t.actual.route}')">СХЕМА</button>
                 </td>
             </tr>`;
         });
@@ -42,7 +42,7 @@ async function openTestPanel() {
         document.getElementById('test-content').innerHTML = html;
 
     } catch (err) {
-        document.getElementById('test-content').innerHTML = "<span style='color:red;'>Ошибка загрузки тестов. Проверьте консоль.</span>";
+        document.getElementById('test-content').innerHTML = "<span class='warning-item'>Сбой связи с сервером при прогоне тестов.</span>";
     }
 }
 
@@ -82,8 +82,8 @@ window.showGraph = function(routeString) {
 
     const pathNodes = routeString.split(" → ");
 
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#cbd5e1';
     edges.forEach(e => {
         if(nodes[e[0]] && nodes[e[1]]) {
             ctx.beginPath();
@@ -93,8 +93,8 @@ window.showGraph = function(routeString) {
         }
     });
 
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#e74c3c';
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#0284c7';
     for(let i=0; i < pathNodes.length - 1; i++) {
         const n1 = pathNodes[i];
         const n2 = pathNodes[i+1];
@@ -109,15 +109,16 @@ window.showGraph = function(routeString) {
     Object.keys(nodes).forEach(k => {
         const isActive = pathNodes.includes(k);
         ctx.beginPath();
-        ctx.arc(nodes[k].x, nodes[k].y, 8, 0, 2*Math.PI);
-        ctx.fillStyle = isActive ? '#e74c3c' : '#95a5a6';
+        ctx.arc(nodes[k].x, nodes[k].y, 6, 0, 2*Math.PI);
+        ctx.fillStyle = isActive ? '#0ea5e9' : '#f8fafc';
         ctx.fill();
-        ctx.strokeStyle = '#fff';
+        ctx.strokeStyle = isActive ? '#0284c7' : '#94a3b8';
         ctx.lineWidth = 2;
         ctx.stroke();
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = isActive ? 'bold 13px Arial' : '13px Arial';
-        ctx.fillText(k, nodes[k].x - 20, nodes[k].y - 12);
+
+        ctx.fillStyle = isActive ? '#0f172a' : '#64748b';
+        ctx.font = isActive ? 'bold 12px Arial' : '12px Arial';
+        ctx.fillText(k, nodes[k].x - 20, nodes[k].y - 14);
     });
 };
 

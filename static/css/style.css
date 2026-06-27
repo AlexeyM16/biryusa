@@ -2,23 +2,26 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
     display: flex;
     height: 100vh;
     overflow: hidden;
-    background-color: #f4f4f9;
+    background-color: #f8fafc;
+    color: #1e293b;
 }
 
 .sidebar {
-    width: 350px;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    width: 380px;
+    background: #ffffff;
+    padding: 24px;
+    border-right: 1px solid #e2e8f0;
     overflow-y: auto;
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 #map {
@@ -27,18 +30,22 @@ body {
 }
 
 h2 {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    color: #2c3e50;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    color: #0f172a;
+    border-bottom: 2px solid #cbd5e1;
+    padding-bottom: 8px;
 }
 
 .control-group {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .control-row {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .half {
@@ -47,78 +54,130 @@ h2 {
 
 label {
     display: block;
-    font-size: 0.85rem;
-    margin-bottom: 5px;
-    color: #555;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: #64748b;
     font-weight: 600;
 }
 
 select, input {
     width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 0.95rem;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    background-color: #f8fafc;
+    font-size: 0.9rem;
+    color: #0f172a;
+    transition: border-color 0.2s;
 }
 
 select:focus, input:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: #0284c7;
+    background-color: #ffffff;
 }
 
 button {
     width: 100%;
-    padding: 12px;
-    background: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 2px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s;
+    transition: all 0.2s;
+    border: 1px solid transparent;
 }
 
-button:hover {
-    background: #2980b9;
+.primary-btn {
+    background: #0ea5e9;
+    color: #ffffff;
+    margin-top: 16px;
 }
 
-/* Кнопка тестов */
+.primary-btn:hover {
+    background: #0284c7;
+}
+
 .secondary-btn {
-    background: #2ecc71;
-    margin-top: 10px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    margin-top: 12px;
 }
+
 .secondary-btn:hover {
-    background: #27ae60;
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.outline-btn {
+    background: transparent;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    width: auto;
+    padding: 6px 12px;
+}
+
+.outline-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
 }
 
 .results-panel {
-    margin-top: 25px;
-    padding: 15px;
-    background: #e8f4f8;
-    border-radius: 6px;
-    border-left: 4px solid #3498db;
+    margin-top: 24px;
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0284c7;
 }
 
 .results-panel h3 {
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-}
-
-.results-panel p {
+    margin-bottom: 12px;
     font-size: 0.9rem;
-    margin-bottom: 6px;
+    text-transform: uppercase;
+    color: #334155;
 }
 
-.warnings {
-    margin-top: 10px;
-    color: #c0392b;
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.results-grid p {
     font-size: 0.85rem;
-    font-weight: bold;
+    color: #475569;
 }
 
-/* Стили панели тестов */
+.results-grid span {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.warnings-box {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed #cbd5e1;
+    font-size: 0.85rem;
+}
+
+.warning-item {
+    color: #b91c1c;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.warning-item::before {
+    content: "— ";
+}
+
+.status-ok {
+    color: #15803d;
+    font-weight: 600;
+}
+
 .hidden { display: none !important; }
 
 .test-runner {
@@ -127,13 +186,14 @@ button:hover {
     top: 0;
     width: 650px;
     height: 100vh;
-    background: #fff;
-    box-shadow: -4px 0 15px rgba(0,0,0,0.3);
+    background: #ffffff;
+    border-left: 1px solid #cbd5e1;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
     z-index: 2000;
-    padding: 20px;
+    padding: 24px;
     overflow-y: auto;
     transform: translateX(100%);
-    transition: transform 0.4s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .test-runner.open {
@@ -144,16 +204,14 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    border-bottom: 2px solid #cbd5e1;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
 }
 
-.test-header button {
-    width: auto;
-    margin: 0;
-    padding: 6px 12px;
-    background: #e74c3c;
+.test-header h2 {
+    margin-bottom: 0;
+    border-bottom: none;
 }
 
 .test-table {
@@ -163,24 +221,16 @@ button:hover {
 }
 
 .test-table th, .test-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 10px;
     text-align: left;
-    vertical-align: middle;
+    color: #334155;
 }
 
 .test-table th {
-    background: #f8f9fa;
-}
-
-.btn-show-graph {
-    background: #34495e;
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    margin: 0;
-}
-.btn-show-graph:hover {
-    background: #2c3e50;
+    background: #f8fafc;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .download-container {
@@ -188,30 +238,16 @@ button:hover {
     text-align: right;
 }
 
-.download-btn {
-    width: auto;
-    background: #8e44ad;
-}
-.download-btn:hover {
-    background: #732d91;
-}
-
-.back-btn {
-    width: auto;
-    background: #95a5a6;
-    margin-bottom: 15px;
-}
-
 .canvas-wrapper {
-    background: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin-top: 16px;
 }
 
 .graph-legend {
     text-align: center;
-    color: #7f8c8d;
-    font-size: 0.9rem;
-    margin-top: 10px;
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 12px;
+    text-transform: uppercase;
 }

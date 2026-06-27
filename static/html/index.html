@@ -14,26 +14,32 @@
         <div class="control-group">
             <label>Откуда:</label>
             <select id="start-point">
-                <option value="" selected>Кликните на карту...</option>
-                <option value="55.928746,92.275371">Дивногорск (Адмирал)</option>
-                <option value="55.902116,92.247447">Жемчужина</option>
-                <option value="55.859435,92.249132">Залив Бирюса</option>
-                <option value="55.840816,92.164664">Царские ворота</option>
-                <option value="55.822157,92.133623">залив Кызыреева</option>
-                <option value="55.922724,91.971605">Верхняя Бирюса</option>
+                <option value="" selected>Укажите на карте...</option>
+                <option value="55.9584,92.3558">Дивногорск</option>
+                <option value="55.9100,92.2500">Полынья</option>
+                <option value="55.9300,92.1500">Лёд-1</option>
+                <option value="55.8500,92.2800">Камни</option>
+                <option value="55.8800,92.1000">Болото</option>
+                <option value="55.8200,92.0500">Узел-М</option>
+                <option value="55.7800,92.1200">Шуга</option>
+                <option value="55.7900,91.9500">Чисто</option>
+                <option value="55.7500,91.9000">Бирюса</option>
             </select>
         </div>
 
         <div class="control-group">
             <label>Куда:</label>
             <select id="end-point">
-                <option value="" selected>Кликните на карту...</option>
-                <option value="55.928746,92.275371">Дивногорск (Адмирал)</option>
-                <option value="55.902116,92.247447">Жемчужина</option>
-                <option value="55.859435,92.249132">Залив Бирюса</option>
-                <option value="55.840816,92.164664">Царские ворота</option>
-                <option value="55.822157,92.133623">залив Кызыреева</option>
-                <option value="55.922724,91.971605">Верхняя Бирюса</option>
+                <option value="" selected>Укажите на карте...</option>
+                <option value="55.9584,92.3558">Дивногорск</option>
+                <option value="55.9100,92.2500">Полынья</option>
+                <option value="55.9300,92.1500">Лёд-1</option>
+                <option value="55.8500,92.2800">Камни</option>
+                <option value="55.8800,92.1000">Болото</option>
+                <option value="55.8200,92.0500">Узел-М</option>
+                <option value="55.7800,92.1200">Шуга</option>
+                <option value="55.7900,91.9500">Чисто</option>
+                <option value="55.7500,91.9000">Бирюса</option>
             </select>
         </div>
 
@@ -61,7 +67,7 @@
                 <input type="number" id="passengers" value="2" min="0" max="6">
             </div>
             <div class="control-group half">
-                <label>Темп. (°C):</label>
+                <label>Температура (°C):</label>
                 <input type="number" id="temperature" value="-15">
             </div>
         </div>
@@ -71,41 +77,43 @@
             <input type="number" id="oil-level" value="100" min="0" max="100">
         </div>
 
-        <button id="calc-btn">Построить маршрут</button>
-        <button id="test-btn" class="secondary-btn">Тест мат. модели</button>
+        <button id="calc-btn" class="primary-btn">Построить маршрут</button>
+        <button id="test-btn" class="secondary-btn">Тестирование мат. модели</button>
 
         <div id="results" class="results-panel" style="display: none;">
-            <h3>Итоги:</h3>
-            <p><b>Дистанция:</b> <span id="res-km">-</span> км</p>
-            <p><b>Время:</b> <span id="res-time">-</span> ч</p>
-            <p><b>Топливо:</b> <span id="res-fuel">-</span> л (Остаток: <span id="res-rem">-</span> л)</p>
-            <p><b>Ср. глубина:</b> <span id="res-depth">-</span> м</p>
-            <p><b>Масло:</b> <span id="res-oil">-</span>%</p>
-            <p><b>Макс. риск:</b> <span id="res-risk">-</span>/10</p>
-            <div id="res-warnings" class="warnings"></div>
+            <h3>Сводка</h3>
+            <div class="results-grid">
+                <p>Дистанция: <span id="res-km">-</span> км</p>
+                <p>Время: <span id="res-time">-</span> ч</p>
+                <p>Топливо: <span id="res-fuel">-</span> л</p>
+                <p>Остаток: <span id="res-rem">-</span> л</p>
+                <p>Ср. глубина: <span id="res-depth">-</span> м</p>
+                <p>Масло: <span id="res-oil">-</span>%</p>
+                <p>Макс. риск: <span id="res-risk">-</span> / 10</p>
+            </div>
+            <div id="res-warnings" class="warnings-box"></div>
         </div>
     </div>
 
-    <!-- Всплывающая панель автотестов -->
     <div id="test-panel" class="test-runner">
         <div class="test-header">
-            <h2>Прогон синтетического графа</h2>
-            <button id="close-test-btn">Закрыть ✖</button>
+            <h2>Отладка алгоритма</h2>
+            <button id="close-test-btn" class="outline-btn">Закрыть панель</button>
         </div>
 
         <div id="test-table-container">
-            <div id="test-content">Загрузка тестов...</div>
+            <div id="test-content">Ожидание запуска...</div>
             <div class="download-container">
-                <button id="download-btn" class="download-btn">📥 Скачать answers.json</button>
+                <button id="download-btn" class="secondary-btn">Скачать answers.json</button>
             </div>
         </div>
 
         <div id="graph-view" class="hidden">
-            <button id="back-graph-btn" class="back-btn">🔙 Назад к таблице</button>
+            <button id="back-graph-btn" class="outline-btn">Назад к таблице</button>
             <div class="canvas-wrapper">
                 <canvas id="graph-canvas" width="600" height="400"></canvas>
             </div>
-            <p class="graph-legend">Красным выделен оптимальный путь для выбранного режима</p>
+            <p class="graph-legend">Сплошной линией выделен оптимальный путь</p>
         </div>
     </div>
 

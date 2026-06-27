@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Навешиваем обработчики кнопок
     document.getElementById('calc-btn').addEventListener('click', calculateRouteApi);
     document.getElementById('test-btn').addEventListener('click', openTestPanel);
     document.getElementById('close-test-btn').addEventListener('click', closeTestPanel);
@@ -30,38 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function calculateRouteApi() {
     if (!startPoint || !endPoint) {
-        alert("Пожалуйста, выберите точку отправления и назначения (на карте или в списке)!");
+        alert("ОШИБКА: Выберите точку отправления и назначения (на карте или в списке).");
         return;
     }
 
-    const BIRYUSA_DEFAULT_LAT = 55.859435;
-    const BIRYUSA_DEFAULT_LON = 92.249132;
-    const ADMIRAL_DEFAULT_LAT = 55.928746;
-    const ADMIRAL_DEFAULT_LON = 92.275371;
-
-    const BIRYUSA_PIER_LAT = 55.858841;
-    const BIRYUSA_PIER_LON = 92.244493;
-    const ADMIRAL_PIER_LAT = 55.928746;
-    const ADMIRAL_PIER_LON = 92.275371;
-
-    function snapToPier(lat, lon) {
-        if (Math.hypot(lat - BIRYUSA_DEFAULT_LAT, lon - BIRYUSA_DEFAULT_LON) < 0.015) {
-            return { lat: BIRYUSA_PIER_LAT, lon: BIRYUSA_PIER_LON };
-        }
-        if (Math.hypot(lat - ADMIRAL_DEFAULT_LAT, lon - ADMIRAL_DEFAULT_LON) < 0.015) {
-            return { lat: ADMIRAL_PIER_LAT, lon: ADMIRAL_PIER_LON };
-        }
-        return { lat: lat, lon: lon };
-    }
-
-    const finalStart = snapToPier(startPoint.lat, startPoint.lon);
-    const finalEnd = snapToPier(endPoint.lat, endPoint.lon);
-
     const payload = {
-        s_lat: finalStart.lat,
-        s_lon: finalStart.lon,
-        e_lat: finalEnd.lat,
-        e_lon: finalEnd.lon,
+        s_lat: startPoint.lat,
+        s_lon: startPoint.lon,
+        e_lat: endPoint.lat,
+        e_lon: endPoint.lon,
         config: document.getElementById('boat-config').value,
         mode: document.getElementById('boat-mode').value,
         passengers: parseInt(document.getElementById('passengers').value) || 0,
@@ -79,7 +55,7 @@ async function calculateRouteApi() {
         const data = await response.json();
 
         if (data.error) {
-            alert("Ошибка: " + data.error);
+            alert("ОШИБКА: " + data.error);
             return;
         }
 
@@ -94,16 +70,19 @@ async function calculateRouteApi() {
         document.getElementById('res-risk').innerText = data.max_risk;
 
         const warningsDiv = document.getElementById('res-warnings');
+        warningsDiv.innerHTML = "";
+
         if (data.warnings && data.warnings.length > 0) {
-            warningsDiv.innerHTML = "⚠️ " + data.warnings.join('<br>⚠️ ');
+            let warningsHtml = data.warnings.map(w => `<div class="warning-item">${w}</div>`).join('');
+            warningsDiv.innerHTML = warningsHtml;
         } else {
-            warningsDiv.innerHTML = "<span style='color:green;'>✓ Маршрут безопасен</span>";
+            warningsDiv.innerHTML = "<div class='status-ok'>СТАТУС: МАРШРУТ БЕЗОПАСЕН</div>";
         }
 
         document.getElementById('results').style.display = 'block';
 
     } catch (err) {
         console.error(err);
-        alert("Не удалось связаться с сервером.");
+        alert("СИСТЕМНАЯ ОШИБКА: Не удалось связаться с сервером.");
     }
 }
