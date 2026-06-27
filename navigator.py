@@ -63,16 +63,29 @@ def init_advanced_gis():
 
 def snap_to_water_and_connect(lat, lon):
     pt = Point(lon, lat)
-    if not WATER_POLY.contains(pt):
-        p_water, _ = nearest_points(WATER_POLY, pt)
-        lat, lon = p_water.y, p_water.x
 
-    visible_nodes = [n for n in GRAPH_NODES if
-                     haversine_km(lat, lon, n[0], n[1]) < 3.0 and line_of_sight((lat, lon), n, use_raw=True)]
+    # 1. Примагничиваем клик с суши к БЕЗОПАСНОЙ зоне (SAFE_POLY).
+    # Это дает гарантию, что старт маршрута будет уже в воде, с отступом от берега.
+    if not SAFE_POLY.contains(pt):
+        p_safe, _ = nearest_points(SAFE_POLY, pt)  # Заменили WATER_POLY на SAFE_POLY
+        lat, lon = p_safe.y, p_safe.x
+
+    node_coord = (lat, lon)
+
+    # 2. Проверяем видимость. Т.к. мы теперь стартуем из SAFE_POLY (из глубины),
+    # проверка use_raw=True сработает идеально и линия до сетки не чиркнет сушу.
+    visible_nodes = [
+        n for n in GRAPH_NODES
+        if haversine_km(lat, lon, n[0], n[1]) < 3.0
+           and line_of_sight(node_coord, n, use_raw=True)
+    ]
+
+    # 3. Фолбек на случай, если из-за сложной геометрии видимых узлов не нашлось
     if not visible_nodes:
         best = min(GRAPH_NODES, key=lambda n: haversine_km(lat, lon, n[0], n[1]))
-        return (lat, lon), [best]
-    return (lat, lon), visible_nodes
+        return node_coord, [best]
+
+    return node_coord, visible_nodes
 
 
 def get_dynamic_physics(lat, lon, temp_c, base_surfaces):
