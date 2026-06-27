@@ -30,6 +30,22 @@
     "безопасный": { "obj": "risk", "k_mode": 1.05 }
   },
   "map": {
+    "nodes_start": "Дивногорск",
+    "nodes_finish": "Бирюса",
+    "edges": [
+      { "from": "Дивногорск", "to": "Полынья", "km": 8, "surface": "water" },
+      { "from": "Полынья", "to": "Узел-М", "km": 15, "surface": "ice" },
+      { "from": "Дивногорск", "to": "Лёд-1", "km": 11, "surface": "ice" },
+      { "from": "Лёд-1", "to": "Узел-М", "km": 13, "surface": "ice" },
+      { "from": "Дивногорск", "to": "Камни", "km": 6, "surface": "rocks" },
+      { "from": "Камни", "to": "Узел-М", "km": 11, "surface": "ice" },
+      { "from": "Дивногорск", "to": "Болото", "km": 7, "surface": "marsh" },
+      { "from": "Болото", "to": "Узел-М", "km": 12, "surface": "ice" },
+      { "from": "Узел-М", "to": "Шуга", "km": 9, "surface": "slush" },
+      { "from": "Шуга", "to": "Бирюса", "km": 6, "surface": "shallow" },
+      { "from": "Узел-М", "to": "Чисто", "km": 13, "surface": "ice" },
+      { "from": "Чисто", "to": "Бирюса", "km": 9, "surface": "ice" }
+    ],
     "water_polygon": [
       [92.38, 55.96], [92.36, 55.93], [92.32, 55.89],
       [92.28, 55.86], [92.32, 55.83], [92.28, 55.78],

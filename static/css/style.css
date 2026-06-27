@@ -84,6 +84,15 @@ button:hover {
     background: #2980b9;
 }
 
+/* Кнопка тестов */
+.secondary-btn {
+    background: #2ecc71;
+    margin-top: 10px;
+}
+.secondary-btn:hover {
+    background: #27ae60;
+}
+
 .results-panel {
     margin-top: 25px;
     padding: 15px;
@@ -108,3 +117,62 @@ button:hover {
     font-size: 0.85rem;
     font-weight: bold;
 }
+
+/* Стили панели тестов */
+.test-runner {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 650px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.3);
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.4s ease;
+}
+
+.test-runner.open {
+    transform: translateX(0);
+}
+
+.test-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.test-header button {
+    width: auto;
+    margin: 0;
+    padding: 6px 12px;
+    background: #e74c3c;
+}
+
+.test-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.test-table th, .test-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.test-table th {
+    background: #f8f9fa;
+}
+
+.pass-row { background-color: #e8f8f5; }
+.fail-row { background-color: #fdedec; }
+.badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; color: white; }
+.badge-pass { background: #2ecc71; }
+.badge-fail { background: #e74c3c; }

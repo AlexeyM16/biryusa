@@ -71,6 +71,8 @@
         </div>
 
         <button id="calc-btn" onclick="calculateRoute()">Построить маршрут</button>
+        <!-- Кнопка автотестов -->
+        <button id="test-btn" class="secondary-btn" onclick="openTestPanel()">Тест мат. модели</button>
 
         <div id="results" class="results-panel" style="display: none;">
             <h3>Итоги:</h3>
@@ -82,6 +84,15 @@
             <p><b>Макс. риск:</b> <span id="res-risk">-</span>/10</p>
             <div id="res-warnings" class="warnings"></div>
         </div>
+    </div>
+
+    <!-- Всплывающая панель автотестов -->
+    <div id="test-panel" class="test-runner hidden">
+        <div class="test-header">
+            <h2>Автопроверка модели (синтетический граф)</h2>
+            <button onclick="closeTestPanel()">Закрыть ✖</button>
+        </div>
+        <div id="test-content">Загрузка тестов...</div>
     </div>
 
     <div id="map"></div>

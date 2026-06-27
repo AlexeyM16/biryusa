@@ -26,3 +26,8 @@ def calculate_route(req: CoordRequest):
         team_data, req.s_lat, req.s_lon, req.e_lat, req.e_lon,
         req.config, req.mode, req.passengers, req.temp, req.oil
     )
+
+@app.get("/run-tests")
+def run_tests():
+    # Прогон синтетических тестов (автопроверка)
+    return navigator.run_synthetic_tests(team_data)

@@ -172,3 +172,63 @@ async function calculateRoute() {
         alert("Не удалось связаться с сервером.");
     }
 }
+
+// =======================================================
+// ЛОГИКА ОКНА ТЕСТИРОВАНИЯ (АВТОПРОВЕРКИ ЭКСПЕРТАМИ)
+// =======================================================
+function closeTestPanel() {
+    document.getElementById('test-panel').classList.remove('open');
+}
+
+async function openTestPanel() {
+    document.getElementById('test-panel').classList.add('open');
+    document.getElementById('test-content').innerHTML = "<b>Прогоняем модель по эталонным графам...</b>";
+
+    try {
+        const res = await fetch('/run-tests');
+        const data = await res.json();
+
+        let html = `<table class="test-table">
+            <thead>
+                <tr>
+                    <th>Конф. / Режим</th>
+                    <th>Ожидание (ТЗ)</th>
+                    <th>Результат Модели</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        data.tests.forEach(t => {
+            const rowClass = t.passed ? "pass-row" : "fail-row";
+            const badgeClass = t.passed ? "badge-pass" : "badge-fail";
+            const statusTxt = t.passed ? "PASS" : "FAIL";
+
+            html += `
+            <tr class="${rowClass}">
+                <td><b>${t.config}</b><br>${t.mode}</td>
+                <td>
+                    ⏱ ${t.expected.time_h} ч<br>
+                    ⛽ ${t.expected.fuel_l} л<br>
+                    ⚠ Риск: ${t.expected.max_risk}<br>
+                    <small>${t.expected.route}</small>
+                </td>
+                <td>
+                    ⏱ ${t.actual.time_h} ч<br>
+                    ⛽ ${t.actual.fuel_l} л<br>
+                    ⚠ Риск: ${t.actual.max_risk}<br>
+                    <small>${t.actual.route}</small>
+                </td>
+                <td style="text-align:center;">
+                    <span class="badge ${badgeClass}">${statusTxt}</span>
+                </td>
+            </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        document.getElementById('test-content').innerHTML = html;
+
+    } catch (err) {
+        document.getElementById('test-content').innerHTML = "<span style='color:red;'>Ошибка загрузки тестов. Проверьте консоль сервера.</span>";
+    }
+}
