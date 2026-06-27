@@ -20,6 +20,7 @@ def haversine_km(lat1, lon1, lat2, lon2):
 
 
 def line_of_sight(n1, n2):
+    # n1, n2 это кортежи (lat, lon)
     line = LineString([(n1[1], n1[0]), (n2[1], n2[0])])
     return WATER_POLY.contains(line)
 
@@ -55,6 +56,27 @@ def init_advanced_gis():
                 n_node = (round(lat + dlat, 4), round(lon + dlon, 4))
                 if n_node in GRAPH_NODES and line_of_sight(node, n_node):
                     GRAPH_EDGES[node].append(n_node)
+
+
+def smooth_path(path):
+    """Оптимизирует путь, удаляя лишние узлы, если есть прямая видимость."""
+    if len(path) < 3:
+        return path
+
+    smoothed = [path[0]]
+    i = 0
+    while i < len(path) - 2:
+        # Проверяем, можно ли соединить текущую точку с точкой через одну
+        if line_of_sight(smoothed[-1], path[i + 2]):
+            # Если можно, прыгаем сразу на i+2 (пропуская i+1)
+            i += 1
+        else:
+            # Если нельзя, добавляем промежуточную точку в маршрут
+            smoothed.append(path[i + 1])
+            i += 1
+
+    smoothed.append(path[-1])
+    return smoothed
 
 
 def snap_to_water_and_connect(lat, lon):
@@ -152,6 +174,9 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
         curr = parents[curr]
     path.append(start_node)
     path.reverse()
+
+    # Сглаживание пути (String Pulling)
+    path = smooth_path(path)
 
     tot_km = tot_time = tot_fuel = max_risk = 0.0
     tot_depth = 0.0
