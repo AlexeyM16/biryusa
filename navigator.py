@@ -5,10 +5,9 @@ from shapely.geometry import shape, Point, LineString
 from shapely.ops import unary_union, nearest_points
 
 WATER_POLY = None
-SAFE_POLY = None
 GRAPH_NODES = []
 GRAPH_EDGES = {}
-STEP = 0.005
+STEP = 0.002
 
 
 def haversine_km(lat1, lon1, lat2, lon2):
@@ -20,23 +19,20 @@ def haversine_km(lat1, lon1, lat2, lon2):
     return 2 * r * math.asin(math.sqrt(a))
 
 
-def line_of_sight(n1, n2, use_raw=False):
+def line_of_sight(n1, n2):
     line = LineString([(n1[1], n1[0]), (n2[1], n2[0])])
-    poly = WATER_POLY if use_raw else SAFE_POLY
-    return poly.contains(line)
+    return WATER_POLY.contains(line)
 
 
 def init_advanced_gis():
-    global WATER_POLY, SAFE_POLY, GRAPH_NODES, GRAPH_EDGES
-    if SAFE_POLY is not None: return
+    global WATER_POLY, GRAPH_NODES, GRAPH_EDGES
+    if WATER_POLY is not None: return
 
     with open("water.geojson", "r", encoding="utf-8") as f:
         data = json.load(f)
 
     polys = [shape(feat["geometry"]) for feat in data.get("features", []) if shape(feat["geometry"]).is_valid]
     WATER_POLY = unary_union(polys)
-    SAFE_POLY = WATER_POLY.buffer(-0.0002)
-    if SAFE_POLY.is_empty: SAFE_POLY = WATER_POLY
 
     min_lat, max_lat = 55.70, 56.00
     min_lon, max_lon = 91.80, 92.45
@@ -45,7 +41,7 @@ def init_advanced_gis():
     while lat <= max_lat:
         lon = min_lon
         while lon <= max_lon:
-            if SAFE_POLY.contains(Point(lon, lat)):
+            if WATER_POLY.contains(Point(lon, lat)):
                 GRAPH_NODES.append((round(lat, 4), round(lon, 4)))
             lon += STEP
         lat += STEP
@@ -63,24 +59,17 @@ def init_advanced_gis():
 
 def snap_to_water_and_connect(lat, lon):
     pt = Point(lon, lat)
-
-    # 1. Примагничиваем клик с суши к БЕЗОПАСНОЙ зоне (SAFE_POLY).
-    # Это дает гарантию, что старт маршрута будет уже в воде, с отступом от берега.
-    if not SAFE_POLY.contains(pt):
-        p_safe, _ = nearest_points(SAFE_POLY, pt)  # Заменили WATER_POLY на SAFE_POLY
+    if not WATER_POLY.contains(pt):
+        p_safe, _ = nearest_points(WATER_POLY, pt)
         lat, lon = p_safe.y, p_safe.x
 
     node_coord = (lat, lon)
-
-    # 2. Проверяем видимость. Т.к. мы теперь стартуем из SAFE_POLY (из глубины),
-    # проверка use_raw=True сработает идеально и линия до сетки не чиркнет сушу.
     visible_nodes = [
         n for n in GRAPH_NODES
-        if haversine_km(lat, lon, n[0], n[1]) < 3.0
-           and line_of_sight(node_coord, n, use_raw=True)
+        if haversine_km(lat, lon, n[0], n[1]) < 4.0
+           and line_of_sight(node_coord, n)
     ]
 
-    # 3. Фолбек на случай, если из-за сложной геометрии видимых узлов не нашлось
     if not visible_nodes:
         best = min(GRAPH_NODES, key=lambda n: haversine_km(lat, lon, n[0], n[1]))
         return node_coord, [best]
@@ -112,6 +101,7 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
     for conn in start_conns:
         if conn not in temp_edges: temp_edges[conn] = []
         temp_edges[conn].append(start_node)
+
     temp_edges[end_node] = end_conns
     for conn in end_conns:
         if conn not in temp_edges: temp_edges[conn] = []
@@ -145,30 +135,12 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
             elif mode == "безопасный":
                 weight = dist * surf["risk"]
 
-            parent = parents[curr]
-            if parent != curr and line_of_sight(parent, nxt, use_raw=True):
-                dist_direct = haversine_km(parent[0], parent[1], nxt[0], nxt[1])
-                w_dir = dist_direct
-                if mode == "быстрый":
-                    w_dir = dist_direct / surf["spd"]
-                elif mode == "экономичный":
-                    w_dir = dist_direct * surf["k_surf"]
-                elif mode == "безопасный":
-                    w_dir = dist_direct * surf["risk"]
-
-                new_cost = g_costs[parent] + w_dir
-                if nxt not in g_costs or new_cost < g_costs[nxt]:
-                    g_costs[nxt] = new_cost
-                    parents[nxt] = parent
-                    h = haversine_km(nxt[0], nxt[1], end_node[0], end_node[1])
-                    heapq.heappush(queue, (new_cost + h, nxt))
-            else:
-                new_cost = g_costs[curr] + weight
-                if nxt not in g_costs or new_cost < g_costs[nxt]:
-                    g_costs[nxt] = new_cost
-                    parents[nxt] = curr
-                    h = haversine_km(nxt[0], nxt[1], end_node[0], end_node[1])
-                    heapq.heappush(queue, (new_cost + h, nxt))
+            new_cost = g_costs[curr] + weight
+            if nxt not in g_costs or new_cost < g_costs[nxt]:
+                g_costs[nxt] = new_cost
+                parents[nxt] = curr
+                h = haversine_km(nxt[0], nxt[1], end_node[0], end_node[1])
+                heapq.heappush(queue, (new_cost + h, nxt))
 
     if end_node not in parents:
         return {"error": "Нет безопасного пути."}
@@ -186,7 +158,7 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
     oil_degradation = 0.0
     warnings = set()
 
-    if oil_pct < boat.get("engine_oil_min_level_pct", 20):
+    if oil_pct < boat.get("engine_oil_min_pct", 20):
         warnings.add("Критический уровень масла!")
         max_risk = 7
 
