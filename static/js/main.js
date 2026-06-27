@@ -1,3 +1,11 @@
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Offline-модуль загружен.', reg.scope))
+            .catch(err => console.error('Ошибка Offline-модуля:', err));
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const startSelect = document.getElementById('start-point');
     const endSelect = document.getElementById('end-point');
@@ -72,11 +80,16 @@ async function calculateRouteApi() {
         const warningsDiv = document.getElementById('res-warnings');
         warningsDiv.innerHTML = "";
 
+        let routeHtml = "";
+        if (data.route_nodes) {
+            routeHtml = `<div style="margin-bottom:12px; font-size: 0.85rem; color: #334155;"><b>ПУТЬ:</b> ${data.route_nodes}</div>`;
+        }
+
         if (data.warnings && data.warnings.length > 0) {
             let warningsHtml = data.warnings.map(w => `<div class="warning-item">${w}</div>`).join('');
-            warningsDiv.innerHTML = warningsHtml;
+            warningsDiv.innerHTML = routeHtml + warningsHtml;
         } else {
-            warningsDiv.innerHTML = "<div class='status-ok'>СТАТУС: МАРШРУТ БЕЗОПАСЕН</div>";
+            warningsDiv.innerHTML = routeHtml + "<div class='status-ok'>СТАТУС: МАРШРУТ БЕЗОПАСЕН</div>";
         }
 
         document.getElementById('results').style.display = 'block';

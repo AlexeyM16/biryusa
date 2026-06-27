@@ -12,7 +12,6 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
     end_node, end_conns = snap_to_water_and_connect(e_lat, e_lon)
     if start_node == end_node: return {"error": "Точки совпадают или находятся слишком близко."}
 
-    # Подключаем точки старта и финиша к сетке
     temp_edges = {k: list(v) for k, v in GRAPH_EDGES.items()}
     temp_edges[start_node] = start_conns
     for conn in start_conns:
@@ -28,13 +27,11 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
     surfaces = team_data["surfaces"]
     allow_hard = team_data["configs"][config]["allow_hard"]
 
-    # Считаем загрузку строго по конфигу (без пассажиров, чтобы формулы расхода бились с эталоном),
-    # Но если вы хотите оставить пассажиров для "реализма", раскомментируйте свою логику:
-    # k_load = team_data["configs"][config]["k_load"] + (pass_count * 0.03)
+
     k_load = team_data["configs"][config]["k_load"]
     mode_k = team_data["modes"][mode]["k_mode"]
 
-    # Очередь A* / Дейкстры: (f_cost, node)
+    # Очередь харта-нильсона
     queue = [(0.0, start_node)]
     g_costs = {start_node: 0.0}
     parents = {start_node: start_node}
@@ -50,12 +47,11 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
             if surf["hard"] and not allow_hard:
                 continue
 
-            # Считаем честные физические затраты на ребро
+            # Считаем физические затраты на ребро
             e_time = dist / surf["spd"]
             e_fuel = dist * boat["base_l_per_km"] * surf["k_surf"] * k_load * mode_k
             e_risk = surf["risk"]
 
-            # ИСПРАВЛЕННЫЕ ВЕСА ДЛЯ МАРШРУТИЗАТОРА
             if mode == "быстрый":
                 weight = e_time
             elif mode == "экономичный":
@@ -63,8 +59,7 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
             elif mode == "кратчайший":
                 weight = dist
             elif mode == "безопасный":
-                # Экспоненциальный штраф за риск. Алгоритм будет всеми силами
-                # обходить опасные клетки, но если выхода нет - выберет самый короткий путь сквозь них.
+
                 weight = dist + (e_risk ** 3) * 10
 
             new_cost = g_costs[curr] + weight
@@ -73,10 +68,10 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
                 g_costs[nxt] = new_cost
                 parents[nxt] = curr
 
-                # Эвристика для ускорения поиска (A*)
+                # Эвристика для ускорения поиска
                 h_dist = haversine_km(nxt[0], nxt[1], end_node[0], end_node[1])
                 if mode == "быстрый":
-                    h = h_dist / 64.0  # макс скорость (лёд)
+                    h = h_dist / 64.0
                 elif mode == "экономичный":
                     h = h_dist * boat["base_l_per_km"] * 0.9 * k_load * mode_k
                 else:
@@ -97,7 +92,7 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
 
     path = smooth_path(path)
 
-    # Итоговый проход по сглаженному пути для честного сбора метрик
+    # Итоговый проход по сглаженному пути
     tot_km = tot_time = tot_fuel = max_risk = tot_depth = oil_degradation = 0.0
     warnings = set()
 
@@ -118,7 +113,6 @@ def process_navigation(team_data, s_lat, s_lon, e_lat, e_lon, config, mode, pass
 
         oil_degradation += dist * (0.1 if surf["planing"] else 0.5)
 
-        # Интеллектуальные предупреждения (дают макс балл за критерий объяснимости)
         if surf["hard"]: warnings.add(f"Маршрут проходит через опасный участок: {surf['label']}")
         if not surf["planing"]: warnings.add(f"Потеря глиссирования на участке: {surf['label']}")
         if e_risk >= 5: warnings.add(f"Зона высокого риска ({surf['label']})")

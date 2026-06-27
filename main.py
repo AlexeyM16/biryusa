@@ -14,9 +14,16 @@ with open("team_data.json", "r", encoding="utf-8") as f:
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# ОТДАЕТ ИНТЕРФЕЙС
 @app.get("/")
 def read_root():
+    # Убедитесь, что путь до вашего index.html правильный
     return FileResponse("static/html/index.html")
+
+# ОТДАЕТ СКРИПТ ОФФЛАЙНА
+@app.get("/sw.js")
+def read_sw():
+    return FileResponse("static/js/sw.js", media_type="application/javascript")
 
 @app.post("/calculate-route")
 def calculate_route(req: CoordRequest):
