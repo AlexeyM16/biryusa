@@ -71,9 +71,8 @@
             <input type="number" id="oil-level" value="100" min="0" max="100">
         </div>
 
-        <button id="calc-btn" onclick="calculateRoute()">Построить маршрут</button>
-        <!-- Кнопка автотестов -->
-        <button id="test-btn" class="secondary-btn" onclick="openTestPanel()">Тест мат. модели</button>
+        <button id="calc-btn">Построить маршрут</button>
+        <button id="test-btn" class="secondary-btn">Тест мат. модели</button>
 
         <div id="results" class="results-panel" style="display: none;">
             <h3>Итоги:</h3>
@@ -91,20 +90,18 @@
     <div id="test-panel" class="test-runner">
         <div class="test-header">
             <h2>Прогон синтетического графа</h2>
-            <button onclick="closeTestPanel()">Закрыть ✖</button>
+            <button id="close-test-btn">Закрыть ✖</button>
         </div>
 
-        <!-- Контейнер таблицы -->
         <div id="test-table-container">
             <div id="test-content">Загрузка тестов...</div>
             <div class="download-container">
-                <button class="download-btn" onclick="downloadAnswers()">📥 Скачать answers.json</button>
+                <button id="download-btn" class="download-btn">📥 Скачать answers.json</button>
             </div>
         </div>
 
-        <!-- Контейнер Графа (белый фон) -->
         <div id="graph-view" class="hidden">
-            <button class="back-btn" onclick="backToTable()">🔙 Назад к таблице</button>
+            <button id="back-graph-btn" class="back-btn">🔙 Назад к таблице</button>
             <div class="canvas-wrapper">
                 <canvas id="graph-canvas" width="600" height="400"></canvas>
             </div>
@@ -115,6 +112,8 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="/static/js/app.js"></script>
+    <script src="/static/js/map.js"></script>
+    <script src="/static/js/testsData.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>
